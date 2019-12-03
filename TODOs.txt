@@ -8,6 +8,7 @@ TODOs:
 	- diffuse / albedo
 	- specular -> taylor series
 	- get gradient
+	- need to randomly select patches of size 400
 
 - figure out how to load in dataset (load directly from images folder 
   or does anyone know how to compress and read out in preprocess) ( ?? )
@@ -28,6 +29,12 @@ TODOs:
 	  it's essentially only a diffuse scene
 
 - write in 2 lines to save model weights ( ?? )
+
+- write final version of train
+	- include specular model in it as well. It'll just be initialized to 
+	  all zeros I believe at first, but also should double check that this
+	  is consistent with the paper. Do we just add the outputs of both 
+	  networks at the very end? I believe so, but not 100% sure.
 
 - figure out how to train on Google cloud thing ( ?? ), if someone already
   knows that's great, otherwise once initial pipeline is complete, and we 

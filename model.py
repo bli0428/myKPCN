@@ -17,6 +17,8 @@ class Denoise(tf.keras.Model):
 	    # reference section 5.2
 	    # 8 or 9 convolution layers of size 100x5x5x21
 	    # no fully connected layers
+	    
+	    # initial input dimensions will change going forward, currently 3, will go up to ~8-10 I think
 	    pass
 
         
