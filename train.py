@@ -22,13 +22,14 @@ DATASET = FLAGS.dataset
 
 def train():
 	'''
+	general structure for training
 	'''
 	inputs, labels = get_data(DATASET)
 	model = Model()
 	optimizer = tf.keras.optimizers.Adam(LEARNING_RATE)
 	saver = tf.train.Saver()
 
-	for 
+	for epoch in range(NUM_EPOCH):
 		for i in range(0, len(inputs) - BATCH_SIZE, BATCH_SIZE):
 			batch_inputs = inputs[i:i+BATCH_SIZE]
 			batch_labels = labels[i:i+BATCH_SIZE]
@@ -36,9 +37,11 @@ def train():
 				predictions = model(batch_inputs)
 				loss = model.loss(predictions, batch_labels)
 			gradients = tape.gradient(loss, model.trainable_variables)
-			model.optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+			optimizer.apply_gradients(zip(gradients, model.trainable_variables))
 	
-	save_path = saver.save(, os.path.join(
+	# dont quite remember how to save, need sessions?
+	# save_path = saver.save(, os.path.join(LOG_DIR, "model.ckpt"))
+	# print("Model saved in file: %s" % save_path)
 
 if __name__ == '__main__':
 	train()

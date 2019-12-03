@@ -14,9 +14,15 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 class Denoise(tf.keras.Model):
     def __init__(self):
-        pass
+	    # reference section 5.2
+	    # 8 or 9 convolution layers of size 100x5x5x21
+	    # no fully connected layers
+	    pass
+
         
     def call(self, images):
+	    
+	    # should convolving with kernel happen here or in loss, my intuition is in loss
         pass
 
     def loss(self, denoised, original):
@@ -29,6 +35,8 @@ class Denoise(tf.keras.Model):
         """
         denoised = tf.dtypes.cast(denoised, tf.float32)
         original = tf.dtypes.cast(original, tf.float32)
+
+	# model.call() here
         
         return tf.reduce_sum(tf.abs(denoised - original))
     

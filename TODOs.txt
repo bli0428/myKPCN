@@ -1,0 +1,42 @@
+TODOs:
+
+- set up dataset (Dylan & Brandon)
+	- will get multiple color and feature buffers
+	- add code to stack and return a list of stacked matrices
+
+- add additional preprocessing functions ( ?? )
+	- diffuse / albedo
+	- specular -> taylor series
+	- get gradient
+
+- figure out how to load in dataset (load directly from images folder 
+  or does anyone know how to compress and read out in preprocess) ( ?? )
+
+- clean up code (make sure it runs with expected inputs and outputs, it 
+  currently should not run, and even after quick syntax is fixed, should 
+  not be exactly correct pipeline aka preprocess returns 1 input image and
+  1 output image, should be 3 lists ( ?? )
+
+- double check that the reference image is just an RGB and does not include
+  additional feature buffers
+
+- write model ( ?? )
+	- we need two models, one for diffuse, one for specular, someone 
+	  double check that this is the correct implementation to just use 
+	  two separate models
+	- first just write and train diffuse and overfit to cornell box, since
+	  it's essentially only a diffuse scene
+
+- write in 2 lines to save model weights ( ?? )
+
+- figure out how to train on Google cloud thing ( ?? ), if someone already
+  knows that's great, otherwise once initial pipeline is complete, and we 
+  can overfit, run 1 epoch on the cloud to make sure parameters, etc. work
+  on it ( ?? )
+
+- if anyone knows a better way to batch, fix current code (train.py, line 33),
+  it's ugly atm
+
+- feel free to restructure code as necessary, feel free to add clearer comments
+  as necessary
+
