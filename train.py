@@ -37,8 +37,8 @@ def train():
 			batch_labels = labels[i:i+BATCH_SIZE]
 			with tf.GradientTape() as tape:
 				diffuse, specular = model.call(batch_inputs)
-                # predictions = (albedo + EPSILON) dot diffuse + exp(specular) - 1
-                predictions = EPSILON * diffuse + np.exp(specular) - 1
+                		# predictions = (albedo + EPSILON) dot diffuse + exp(specular) - 1
+               			predictions = EPSILON * diffuse + np.exp(specular) - 1
 				loss = model.loss(predictions, batch_labels)
 			gradients = tape.gradient(loss, model.trainable_variables)
 			optimizer.apply_gradients(zip(gradients, model.trainable_variables))
