@@ -1,5 +1,5 @@
-from preprocess import get_data
-from model import Model
+from dataset import get_data
+from model import Denoise
 
 import numpy as np
 import tensorflow as tf
@@ -7,7 +7,7 @@ import argparse
 
 # will change hyperparameters later
 parser = argparse.ArgumentParser()
-parser.add_argument('--num_epoch', type=int, default=10 help='Number of epochs to run [default: 10]')
+parser.add_argument('--num_epoch', type=int, default=10, help='Number of epochs to run [default: 10]')
 parser.add_argument('--batch_size', type=int, default=5, help='Number of epochs to run [default: 32]')
 parser.add_argument('--learning_rate', type=int, default=0.0001, help='Learning rate [default: e-5]')
 parser.add_argument('--epsilon', type=int, default=0.00316, help='Epsilon [default: 0.00316]')
@@ -27,21 +27,23 @@ def train():
 	general structure for training
 	'''
 	inputs, labels = get_data(DATASET)
-	model = Model()
+	model = Denoise()
 	optimizer = tf.keras.optimizers.Adam(LEARNING_RATE)
-	saver = tf.train.Saver()
+	#saver = tf.train.Saver()
 
 	for epoch in range(NUM_EPOCH):
 		for i in range(0, len(inputs) - BATCH_SIZE, BATCH_SIZE):
 			batch_inputs = inputs[i:i+BATCH_SIZE]
 			batch_labels = labels[i:i+BATCH_SIZE]
 			with tf.GradientTape() as tape:
-				diffuse, specular = model.call(batch_inputs)
-                		# predictions = (albedo + EPSILON) dot diffuse + exp(specular) - 1
-               			predictions = EPSILON * diffuse + np.exp(specular) - 1
+				diffuse, specular = model.call(batch_inputs, batch_inputs)
+                # predictions = (albedo + EPSILON) dot diffuse + exp(specular) - 1
+				predictions = EPSILON * diffuse #+ np.exp(specular) - 1
 				loss = model.loss(predictions, batch_labels)
 			gradients = tape.gradient(loss, model.trainable_variables)
 			optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+			if i % 10 == 0:
+				print("LOSS:", loss)
 	
 	# dont quite remember how to save, need sessions?
 	# save_path = saver.save(, os.path.join(LOG_DIR, "model.ckpt"))

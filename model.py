@@ -13,6 +13,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 class Denoise(tf.keras.Model):
     def __init__(self):
         # reference section 5.2
+        super(Denoise, self).__init__()
         
         self.input_patch_size = 65
         self.output_patch_size = 21
@@ -30,8 +31,8 @@ class Denoise(tf.keras.Model):
         
         for i in range(self.num_conv_layers):
             activation = 'relu' if i != self.num_conv_layers - 1 else None
-            self.diffuse_kernels.append(tf.keras.layers.Conv2d(self.filters[i], self.kernel_sizes[i], activation=activation)) # padding is valid in training, but not when evaluating, keras layers may not be ideal for this
-            self.specular_kernels.append(tf.keras.layers.Conv2d(self.filters[i], self.kernel_sizes[i], activation=activation))
+            self.diffuse_kernels.append(tf.keras.layers.Conv2D(self.filters[i], self.kernel_sizes[i], activation=activation)) # padding is valid in training, but not when evaluating, keras layers may not be ideal for this
+            self.specular_kernels.append(tf.keras.layers.Conv2D(self.filters[i], self.kernel_sizes[i], activation=activation))
             
         assert len(self.diffuse_kernels) == self.num_conv_layers
         assert len(self.specular_kernels) == self.num_conv_layers
