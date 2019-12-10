@@ -8,7 +8,7 @@ from imageio import imwrite
 
 # will change hyperparameters later
 parser = argparse.ArgumentParser()
-parser.add_argument('--num_epoch', type=int, default=10, help='Number of epochs to run [default: 10]')
+parser.add_argument('--num_epoch', type=int, default=100, help='Number of epochs to run [default: 10]')
 parser.add_argument('--batch_size', type=int, default=5, help='Number of epochs to run [default: 32]')
 parser.add_argument('--learning_rate', type=int, default=0.0001, help='Learning rate [default: e-5]')
 parser.add_argument('--epsilon', type=int, default=0.00316, help='Epsilon [default: 0.00316]')
@@ -32,8 +32,8 @@ def train():
 	optimizer = tf.keras.optimizers.Adam(LEARNING_RATE)
 	#saver = tf.train.Saver()
 
-	inputs = tf.reshape(inputs, (1, 512, 512, 3))
-	labels = tf.reshape(labels, (1, 512, 512, 3))
+	inputs = tf.reshape(inputs, (1, 512, 512, 3))/255
+	labels = tf.reshape(labels, (1, 512, 512, 3))/255
 	for epoch in range(NUM_EPOCH):
 		'''
 		for i in range(0, len(inputs) - BATCH_SIZE, BATCH_SIZE):
@@ -55,7 +55,7 @@ def train():
 			loss = model.loss(predictions, labels)
 		gradients = tape.gradient(loss, model.trainable_variables)
 		optimizer.apply_gradients(zip(gradients, model.trainable_variables))
-		print("LOSS:", loss)
+		print("LOSS", epoch, ":", loss)
 
 	# dont quite remember how to save, need sessions?
 	# save_path = saver.save(, os.path.join(LOG_DIR, "model.ckpt"))
@@ -64,9 +64,10 @@ def train():
 
 def write_prediction(inputs, model):
 	prediction_diff, prediction_spec = model.call(inputs, inputs)
-	prediction = np.array(EPSILON * prediction_diff) # Change when we add specular
+	prediction = np.array(EPSILON * prediction_diff * 255) # Change when we add specular
 	prediction = prediction.astype(np.uint8)
-	prediction = np.reshape(prediction, (512, 512, 3))
+	prediction = np.clip(np.reshape(prediction, (512, 512, 3)), 0, 255)
+
 	s = 'images/predicted_cornell_box.png'
 	imwrite(s, prediction)
 

@@ -62,7 +62,7 @@ class Denoise(tf.keras.Model):
 
     	# model.call() here
 
-        return tf.reduce_mean(tf.abs(denoised - original))
+        return tf.reduce_sum(tf.abs(denoised - original))
 
 
     def accuracy(self, denoised, original):
