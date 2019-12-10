@@ -32,6 +32,7 @@ def train():
 	#saver = tf.train.Saver()
 
 	for epoch in range(NUM_EPOCH):
+		'''
 		for i in range(0, len(inputs) - BATCH_SIZE, BATCH_SIZE):
 			batch_inputs = inputs[i:i+BATCH_SIZE]
 			batch_labels = labels[i:i+BATCH_SIZE]
@@ -44,11 +45,20 @@ def train():
 			optimizer.apply_gradients(zip(gradients, model.trainable_variables))
 			if i % 10 == 0:
 				print("LOSS:", loss)
-	
+		'''
+		with tf.GradientTape() as tape:
+			inputs = tf.reshape(inputs, (1, 512, 512, 3))
+			labels = tf.reshape(labels, (1, 512, 512, 3))
+			diffuse, specular = model.call(inputs, inputs)
+			predictions = EPSILON * diffuse
+			loss = model.loss(predictions, labels)
+		gradients = tape.gradient(loss, model.trainable_variables)
+		optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+		print("LOSS:", loss)
+
 	# dont quite remember how to save, need sessions?
 	# save_path = saver.save(, os.path.join(LOG_DIR, "model.ckpt"))
 	# print("Model saved in file: %s" % save_path)
 
 if __name__ == '__main__':
 	train()
-
