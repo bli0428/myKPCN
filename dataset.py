@@ -48,6 +48,6 @@ def get_data(filepath):
 	will eventually return diffuse matrix of MxNx(3+D), 3 for RGB and  D for the number of additional feature buffers,
 			       specular matrix of MxNx(3+D), and reference image (MxNx3)
 	'''
-	
+
 	return x, y
 	# return diffuse, specular, y

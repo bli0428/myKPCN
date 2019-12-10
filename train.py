@@ -4,6 +4,7 @@ from model import Denoise
 import numpy as np
 import tensorflow as tf
 import argparse
+from imageio import imwrite
 
 # will change hyperparameters later
 parser = argparse.ArgumentParser()
@@ -31,6 +32,8 @@ def train():
 	optimizer = tf.keras.optimizers.Adam(LEARNING_RATE)
 	#saver = tf.train.Saver()
 
+	inputs = tf.reshape(inputs, (1, 512, 512, 3))
+	labels = tf.reshape(labels, (1, 512, 512, 3))
 	for epoch in range(NUM_EPOCH):
 		'''
 		for i in range(0, len(inputs) - BATCH_SIZE, BATCH_SIZE):
@@ -47,8 +50,6 @@ def train():
 				print("LOSS:", loss)
 		'''
 		with tf.GradientTape() as tape:
-			inputs = tf.reshape(inputs, (1, 512, 512, 3))
-			labels = tf.reshape(labels, (1, 512, 512, 3))
 			diffuse, specular = model.call(inputs, inputs)
 			predictions = EPSILON * diffuse
 			loss = model.loss(predictions, labels)
@@ -59,6 +60,16 @@ def train():
 	# dont quite remember how to save, need sessions?
 	# save_path = saver.save(, os.path.join(LOG_DIR, "model.ckpt"))
 	# print("Model saved in file: %s" % save_path)
+	write_prediction(inputs, model)
+
+def write_prediction(inputs, model):
+	prediction_diff, prediction_spec = model.call(inputs, inputs)
+	prediction = np.array(EPSILON * prediction_diff) # Change when we add specular
+	prediction = prediction.astype(np.uint8)
+	prediction = np.reshape(prediction, (512, 512, 3))
+	s = 'images/predicted_cornell_box.png'
+	imwrite(s, prediction)
+
 
 if __name__ == '__main__':
 	train()
