@@ -40,18 +40,18 @@ def train():
 	inputs = tf.reshape(inputs, (1, 512, 512, 3))/255
 	labels = tf.reshape(labels, (1, 512, 512, 3))/255
 	for epoch in range(NUM_EPOCH):
-        for i in range(0, len(inputs) - BATCH_SIZE, BATCH_SIZE):
-            for j in range(0, inputs.shape[1] - PATCH_SIZE, PATCH_SIZE):
-                for k in range(0, inputs.shape[2] - PATCH_SIZE, PATCH_SIZE):
-                    with tf.GradientTape() as tape:
-                        batch_patch_inputs = inputs[i:i+BATCH_SIZE][j:j+PATCH_SIZE][k:k+PATCH_SIZE]
-                        batch_patch_labels = labels[i:i+BATCH_SIZE][j:j+PATCH_SIZE][k:k+PATCH_SIZE]
-                        diffuse, specular = model.call(batch_patch_inputs, batch_patch_labels)
-                        predictions = EPSILON * diffuse + tf.exp(specular) - 1
-                        loss = model.loss(predictions, batch_patch_labels)
-                    gradients = tape.gradient(loss, model.trainable_variables)
-                    optimizer.apply_gradients(zip(gradients, model.trainable_variables))
-                    print("LOSS", epoch, ":", loss)
+		for i in range(0, len(inputs) - BATCH_SIZE, BATCH_SIZE):
+			for j in range(0, inputs.shape[1] - PATCH_SIZE, PATCH_SIZE):
+				for k in range(0, inputs.shape[2] - PATCH_SIZE, PATCH_SIZE):
+					with tf.GradientTape() as tape:
+						batch_patch_inputs = inputs[i:i+BATCH_SIZE][j:j+PATCH_SIZE][k:k+PATCH_SIZE]
+						batch_patch_labels = labels[i:i+BATCH_SIZE][j:j+PATCH_SIZE][k:k+PATCH_SIZE]
+						diffuse, specular = model.call(batch_patch_inputs, batch_patch_labels)
+						predictions = EPSILON * diffuse + tf.exp(specular) - 1
+						loss = model.loss(predictions, batch_patch_labels)
+					gradients = tape.gradient(loss, model.trainable_variables)
+					optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+					print("LOSS", epoch, ":", loss)
                     
 
 	# dont quite remember how to save, need sessions?
